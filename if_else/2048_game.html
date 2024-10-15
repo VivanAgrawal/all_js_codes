@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2048 Game</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #faf8ef;
+        }
+        #gameContainer {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-template-rows: repeat(4, 100px);
+            gap: 10px;
+        }
+        .tile {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100px;
+            height: 100px;
+            background-color: #eee4da;
+            font-size: 24px;
+            font-weight: bold;
+            color: #776e65;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>2048 Game</h1>
+    <div id="gameContainer"></div>
+    <button onclick="startGame()">Restart</button>
+    <p id="message"></p>
+
+    <script>
+        let board = [];
+        let gameContainer = document.getElementById('gameContainer');
+        let message = document.getElementById('message');
+
+        function startGame() {
+            board = [
+                ['', '', '', ''],
+                ['', '', '', ''],
+                ['', '', '', ''],
+                ['', '', '', '']
+            ];
+            addRandomTile();
+            addRandomTile();
+            render();
+            message.textContent = '';
+        }
+
+        function addRandomTile() {
+            let emptyTiles = [];
+            board.forEach((row, rIndex) => {
+                row.forEach((tile, cIndex) => {
+                    if (tile === '') {
+                        emptyTiles.push({ rIndex, cIndex });
+                    }
+                });
+            });
+            if (emptyTiles.length) {
+                const { rIndex, cIndex } = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+                board[rIndex][cIndex] = Math.random() < 0.9 ? 2 : 4;
+            }
+        }
+
+        function render() {
+            gameContainer.innerHTML = '';
+            board.forEach(row => {
+                row.forEach(tile => {
+                    const tileElement = document.createElement('div');
+                    tileElement.classList.add('tile');
+                    tileElement.textContent = tile ? tile : '';
+                    gameContainer.appendChild(tileElement);
+                });
+            });
+        }
+
+        function slideLeft() {
+            let score = 0;
+            for (let row of board) {
+                let newRow = row.filter(val => val);
+                for (let i = 0; i < newRow.length - 1; i++) {
+                    if (newRow[i] === newRow[i + 1]) {
+                        newRow[i] *= 2;
+                        score += newRow[i];
+                        newRow.splice(i + 1, 1);
+                    }
+                }
+                while (newRow.length < 4) newRow.push('');
+                row.splice(0, 4, ...newRow);
+            }
+            return score;
+        }
+
+        function rotateBoard() {
+            board = board[0].map((_, colIndex) => board.map(row => row[colIndex])).reverse();
+        }
+
+        function slide(direction) {
+            let score = 0;
+            if (direction === 'left') {
+                score += slideLeft();
+            } else {
+                rotateBoard();
+                if (direction === 'right') {
+                    score += slideLeft();
+                    board.forEach(row => row.reverse());
+                } else if (direction === 'down') {
+                    board.forEach(row => row.reverse());
+                    score += slideLeft();
+                } else {
+                    score += slideLeft();
+                    board.reverse();
+                }
+            }
+            if (score) {
+                addRandomTile();
+                render();
+                checkGameOver();
+            }
+        }
+
+        function checkGameOver() {
+            const hasEmptyTile = board.some(row => row.includes(''));
+            const canMerge = board.some((row, rIndex) => row.some((tile, cIndex) => {
+                if (tile === '') return false;
+                const adjacent = [
+                    row[cIndex + 1], row[cIndex - 1],
+                    (board[rIndex + 1] || [])[cIndex], (board[rIndex - 1] || [])[cIndex]
+                ];
+                return adjacent.includes(tile);
+            }));
+            if (!hasEmptyTile && !canMerge) {
+                message.textContent = 'Game Over!';
+            }
+        }
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'ArrowLeft') slide('left');
+            if (event.key === 'ArrowRight') slide('right');
+            if (event.key === 'ArrowDown') slide('down');
+            if (event.key === 'ArrowUp') slide('up');
+        });
+
+        startGame();
+    </script>
+
+</body>
+</html>

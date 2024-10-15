@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Word Game</title>
+</head>
+<body>
+
+<h1>Guess the Word Game</h1>
+<p id="wordDisplay"></p>
+<input type="text" id="guessInput" placeholder="Enter a letter" maxlength="1">
+<button onclick="guessLetter()">Guess</button>
+<p id="result"></p>
+
+<script>
+// Function to get a random word
+function getRandomWord() {
+    const words = [
+        {word: "javascript", length: 10},
+        {word: "vivan", length: 5},
+        {word: "aayan", length: 5},
+        {word: "kshitij", length: 7},
+        {word: "manan", length: 5},
+        {word: "amulya", length: 5},
+        {word: "shashank", length: 8},
+        {word: "maneet", length: 6},
+        {word: "gourish", length: 7},
+        {word: "sarthak", length: 7},
+        {word: "chechani", length: 8},
+        {word: "mohan", length: 5},
+        {word: "deepesh", length: 7},
+        {word: "goverdhan", length: 9},
+    ];
+    
+    // Select a random word
+    let randomIndex = Math.floor(Math.random() * words.length);
+    return words[randomIndex];
+}
+
+// Initialize the game
+let selectedWordObject = getRandomWord();
+let word = selectedWordObject.word.split("");  // Convert word string into an array
+let hiddenWord = Array(selectedWordObject.length).fill("_");  // Hidden word display
+
+let attempts = 0;
+let maxAttempts = 10;  // Maximum number of attempts
+
+// Display the hidden word initially
+document.getElementById("wordDisplay").innerHTML = hiddenWord.join(" ");
+
+// Function to guess a letter
+function guessLetter() {
+    let guess = document.getElementById("guessInput").value.toLowerCase();
+    document.getElementById("guessInput").value = "";  // Clear input
+
+    let correctGuess = false;
+
+    // Loop through the word to check if the guessed letter is correct
+    for (let index in word) {
+        if (word[index] === guess) {
+            hiddenWord[index] = guess;  // Reveal the correct guessed letter
+            correctGuess = true;
+        }
+    }
+
+    // Display the updated word
+    document.getElementById("wordDisplay").innerHTML = hiddenWord.join(" ");
+
+    if (correctGuess) {
+        document.getElementById("result").innerHTML = "Good guess!";
+    } else {
+        attempts++;
+        document.getElementById("result").innerHTML = `Wrong guess! Attempts left: ${maxAttempts - attempts}`;
+    }
+
+    // Check if the player has won
+    if (!hiddenWord.includes("_")) {
+        document.getElementById("result").innerHTML = "Congratulations! You guessed the word: " + hiddenWord.join("");
+    }
+
+    // Check if the player has lost
+    if (attempts >= maxAttempts) {
+        document.getElementById("result").innerHTML = "Game over! The word was: " + word.join("");
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stone Paper Scissor</title>
+    <script src="main.js"></script>
+    <style>
+        body {
+            background-image: url('https://t3.ftcdn.net/jpg/03/23/88/08/360_F_323880864_TPsH5ropjEBo1ViILJmcFHJqsBzorxUB.jpg');
+            background-size: cover;
+        }
+        h1 {
+            text-align: center;
+            padding-top: 100px;
+            color: aliceblue;
+        }
+        .button {
+            position: absolute;
+            bottom: 50%;
+            left: 50%;
+            transform: translate(-50%, 50%);
+            display: flex;
+            gap: 20px;
+        }
+        .button1 {
+            background-color: white;
+            color: black;
+            border: 5px solid #d9f02f;
+            padding: 10px 20px; 
+            font-size: 20px; 
+            border-radius: 8px; 
+        }
+        .button1 button {
+            background: none;
+            border: none;
+            font-size: inherit;
+            padding: inherit;
+            color: inherit;
+            cursor: pointer;
+        }
+        .button1 button:hover {
+            background-color: #abaca2;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stone Paper Scissor</h1>
+
+    <div class="button">
+        <div class="button1">
+            <button onclick="play('stone')">Stone</button>
+        </div>
+        <div class="button1">
+            <button onclick="play('paper')">Paper</button>
+        </div>
+        <div class="button1">
+            <button onclick="play('scissor')">Scissor</button>
+        </div>
+    </div>
+
+</body>
+</html>
